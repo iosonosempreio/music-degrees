@@ -1,0 +1,74 @@
+<div class="container-fluid">
+  <div class="Ccontainer">
+    <script type="text/ng-template" id="customTemplate.html">
+      <a ng-class="'query-result'">
+        <div ng-if="match.model.images[0]" ng-style="{'background-image':'url({{match.model.images[match.model.images.length-1].url}})'}" ng-class="'img-circle artist-thumbnail'"></div>
+        <img ng-if="!match.model.images[0]" ng-src="" ng-class="'img-circle'"/>
+        <span ng-bind-html="match.label | uibTypeaheadHighlight:query"></span>
+      </a>
+    </script>
+
+    <div class='row'>
+      <div class="col-xs-6">
+        <h4>Artist Left</h4>
+        <input type="text" ng-model="leftSelected" placeholder="Custom template" uib-typeahead="artist as artist.name for artist in searchArtists($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-show-hint="true" typeahead-min-length="1" typeahead-wait-ms="100" typeahead-on-select="selected['left'] = $item" typeahead-loading="loadingArtists" typeahead-no-results="noArtists">
+        <i ng-show="loadingArtists" class="glyphicon glyphicon-refresh"></i>
+        <div ng-show="noArtists">
+          <i class="glyphicon glyphicon-remove"></i> No Results Found
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <h4>Artist Right</h4>
+        <input type="text" ng-model="rightSelected" placeholder="Custom template" uib-typeahead="artist as artist.name for artist in searchArtists($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-show-hint="true" typeahead-min-length="1" typeahead-wait-ms="100" typeahead-on-select="selected['right'] = $item" typeahead-loading="loadingArtistsRight" typeahead-no-results="noArtistsRight">
+        <i ng-show="loadingArtistsRight" class="glyphicon glyphicon-refresh"></i>
+        <div ng-show="noArtistsRight">
+          <i class="glyphicon glyphicon-remove"></i> No Results Found
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-6">{{ selected.left.name | json }}</div>
+      <div class="col-xs-6">{{ selected.right.name | json }}</div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button type="button" class="btn btn-default" ng-disabled="false" ng-click="fetchRelated()">Go</button>
+        <button type="button" class="btn btn-default" ng-disabled="disable.cancelSearch" ng-click="return=true">Cancel</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 box" ng-if="disable.chart">
+
+        <div class="artist left" ng-if="true">
+          <span ng-style="selected.left.images[0]?{'background-image':'url({{selected.left.images[0].url}})'}:'url()'"></span>
+          {{selected.left.name}}
+        </div>
+
+        <div class="bar" ng-if="!selected.all">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%;">
+              {{progress | number:0}}% Complete
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="selected.all && !$first && !$last" ng-repeat="artist in selected.all" ng-class="'artist'">
+          <span ng-style="artist.images[0]?{'background-image':'url({{artist.images[0].url}})'}:'url()'"></span>
+          {{artist.name}}
+        </div>
+
+        <div class="artist right" ng-if="true">
+          <span ng-style="selected.right.images[0]?{'background-image':'url({{selected.right.images[0].url}})'}:'url()'"></span>
+          {{selected.right.name}}
+        </div>
+
+        
+
+      </div>
+    </div>
+
+  </div>
+</div>
